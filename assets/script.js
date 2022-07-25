@@ -32,8 +32,37 @@ function currentCondition(city) {
 
         var lat = cityWeatherResponse.coord.lat;
         var lon = cityWeatherResponse.coord.lon;
-        var uviQueryStr =  
+        var uviQueryStr = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${key}`;
 
+        $.ajax({
+            url: uviQueryStr,
+            method: "GET"
+        }).then(function(uviResponse) {
+            
+            var uvi = uviResponse.value;
+            // variable holds <p> tag for UVI
+            var uviP = $(`
+            <p>UV Index:
+                <span id="uv-index-color" class="px-2 py-2 rounded">${uvi}</span> 
+            </p>`
+            );
 
-    })
+            $('#city-details').append(uviP);
+
+            futureCondition(lat, lon);
+
+            // applies color based on uv index conditions
+            if (uvi >= 0 && uvi <=2) {
+                $('#uv-index-color').css('background-color', "#3EA72D").css("color", "white");
+            }else if (uvi >= 3 && uvi <= 5) {
+                $("#uvIndexColor").css("background-color", "#FFF300");
+            }else if (uvi >= 6 && uvi <= 7) {
+                $("#uvIndexColor").css("background-color", "#F18B00");
+            }else if (uvi >= 8 && uvi <= 10) {
+                $("#uvIndexColor").css("background-color", "#E53210").css("color", "white");
+            }else {
+                $("#uvIndexColor").css("background-color", "#B567A4").css("color", "white");
+            };
+        });
+    });
 }
