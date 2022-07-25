@@ -1,0 +1,46 @@
+h1 {
+    font-size: 50px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: white;
+}
+
+#weather-content {
+    display: none;
+}
+
+.navbar {
+    height: 150px;
+}
+
+/* difine uv-index-color in js */
+#city-details, #uv-index-color,
+li {
+    color: grey;
+}
+
+#search-results, #city-details,
+.card {
+    background-color: lightgray;
+}
+
+#search-results {
+    height: 100vh;
+}
+
+#five-day .card {
+    border: 1px solid whtie;
+}
+
+/* chose background and text color */
+#search-history li {
+
+}
+
+p {
+    color: peachpuff;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
