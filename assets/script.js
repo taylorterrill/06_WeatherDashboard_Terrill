@@ -1,9 +1,11 @@
 var key = "c099ae675a44a1b9455b2c8046eef852";
 var today = moment().format('L');
 var searchHistoryLi = [];
+var searchBtn = document.getElementById('city-search-btn');
+var cityInput = document.getElementById('enter-city').value;
 
 function currentCondition(city) {
-    var queryStr = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${key}`;
+    var queryStr = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${key}`;
 
     $.ajax({
         url: queryStr,
@@ -32,7 +34,7 @@ function currentCondition(city) {
 
         var lat = cityWeatherResponse.coord.lat;
         var lon = cityWeatherResponse.coord.lon;
-        var uviQueryStr = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${key}`;
+        var uviQueryStr = 'https://api.openweathermap.org/data/2.5/uvi?lat=' + lat + '&lon=' + lon + '&appid=' + key;
 
         $.ajax({
             url: uviQueryStr,
@@ -69,7 +71,7 @@ function currentCondition(city) {
 
 
 function futureCondition(lat, lon) {
-    var futureStr = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=current,minutely,hourly,alerts&appid=${key}`;
+    var futureStr = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=current,minutely,hourly,alerts&appid=${key}`;
     
     $.ajax({
         url: futureStr,
@@ -103,7 +105,39 @@ function futureCondition(lat, lon) {
         `);
 
             $('#five-day').append(futureCard);
-        }
+        };
     });
-}
+};
 
+searchBtn.addEventListener('click', function(event) {
+    event.preventDefault();
+    console.log(cityInput);
+    currentCondition(cityInput);
+    if (!searchHistoryLi.includes(cityInput)) {
+        searchHistoryLi.push(cityInput);
+        var searchedCity = $(`
+            <li class="list-group-item">${cityInput}</li>
+            `);
+    $("#search-history").append(searchedCity)
+    };
+
+    localStorage.setItem('city', JSON.stringify(searchHistoryLi));
+    console.log(searchHistoryLi);
+});
+
+
+$(document).on('click', '.list-group-item', function() {
+    var listCity = $(this).text();
+    currentCondition(listCity);
+});
+
+$(document).ready(function() {
+    var searchHistoryArr = JSON.parse(localStorage.getItem('city'));
+
+    if (searchHistoryArr !== null) {
+        var lastSearchedIndex = searchHistoryArr.length - 1;
+        var lastSearchedCity = searchHistoryArr[lastSearchedIndex];
+        currentCondition(lastSearchedCity);
+        console.log(`Last searched city: ${lastSearchedCity}`);  
+    }
+})
